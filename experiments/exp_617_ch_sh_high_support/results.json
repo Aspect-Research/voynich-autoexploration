@@ -1,0 +1,74 @@
+{
+  "experiment": "exp_617_ch_sh_high_support",
+  "status": "corrected parser: terminal digraphs without a following character excluded",
+  "source_blob_sha": {
+    "ZL3b": "2a4533ab9bdfa85db9bad602d590978953055df1",
+    "IT2a": "4d6d3f2537b1f507a257529b49c94af7d6e03446"
+  },
+  "results": {
+    "ZL3b": {
+      "min3": {
+        "matched_cells": 280,
+        "retained_cells": 109,
+        "retained_folios": 23,
+        "ch_n": 1545,
+        "ch_rate": 0.8317152103559871,
+        "sh_n": 817,
+        "sh_rate": 0.8849449204406364,
+        "pooled_difference": 0.053229710084649384,
+        "folio_equal_weight_mean_difference": 0.07913780433319091,
+        "bootstrap_ci95": [
+          0.03240139417329192,
+          0.12264360348200222
+        ]
+      },
+      "min5": {
+        "matched_cells": 280,
+        "retained_cells": 63,
+        "retained_folios": 23,
+        "ch_n": 1134,
+        "ch_rate": 0.8342151675485009,
+        "sh_n": 662,
+        "sh_rate": 0.8806646525679759,
+        "pooled_difference": 0.04644948501947499,
+        "folio_equal_weight_mean_difference": 0.07916540354485083,
+        "bootstrap_ci95": [
+          0.030693218033714796,
+          0.12424248413835867
+        ]
+      }
+    },
+    "IT2a": {
+      "min3": {
+        "matched_cells": 283,
+        "retained_cells": 105,
+        "retained_folios": 23,
+        "ch_n": 1552,
+        "ch_rate": 0.8253865979381443,
+        "sh_n": 819,
+        "sh_rate": 0.884004884004884,
+        "pooled_difference": 0.05861828606673969,
+        "folio_equal_weight_mean_difference": 0.08379723725141563,
+        "bootstrap_ci95": [
+          0.046305873308069415,
+          0.12362954783715255
+        ]
+      },
+      "min5": {
+        "matched_cells": 283,
+        "retained_cells": 62,
+        "retained_folios": 22,
+        "ch_n": 1135,
+        "ch_rate": 0.8237885462555066,
+        "sh_n": 666,
+        "sh_rate": 0.8798798798798799,
+        "pooled_difference": 0.05609133362437335,
+        "folio_equal_weight_mean_difference": 0.07452642550772767,
+        "bootstrap_ci95": [
+          0.02505239463127922,
+          0.1212905210913552
+        ]
+      }
+    }
+  }
+}

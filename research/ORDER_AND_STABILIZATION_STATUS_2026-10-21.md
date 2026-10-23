@@ -1,0 +1,205 @@
+# Estado de orden y estabilización — 2026-10-21
+
+**Actualización operativa 22-10-2026:** [estado operativo actual](OPERATIONAL_STATUS.md). Sustituye las notas históricas de este documento sobre 30 publicadores y sobre la diferencia de nueve filas. La auditoría científica/archivística continúa abierta.
+
+Estado global: **EN AUDITORÍA**. No iniciar experimentos nuevos ni asignar nuevos IDs EXP hasta cerrar los bloqueos P0/P1 y reconciliar GitHub con la Biblioteca.
+
+## 1. Cambios comprobados en este ciclo
+
+- Repositorio: `kyrian20/voynich-autoexploration`, rama `master`.
+- El workflow `.github/workflows/voynich-check.yml` comprueba que existan dos transcripciones, analiza la sintaxis de los scripts Python, ejecuta `tests/test_ivtff_metadata.py` y después `scripts/audit_ivtff_metadata.py`.
+- El error mostrado por una ejecución anterior fue `NameError: name 'q' is not defined`, durante `load_lines(path)` llamado por la prueba de metadatos.
+- En la versión actual inspeccionada de `scripts/exp590_daiin_position.py`, `load_lines` no contiene esa referencia a `q`; la clasificación se lee mediante `parse_currier_language` y el campo IVTFF `$L`.
+- Se publicó un cambio de diagnóstico en `tests/test_ivtff_metadata.py` para imprimir la ruta absoluta del módulo EXP-590 realmente importado. Commit: `2c5418ff3d68111525bd04f769f8e5ee0a0ab039`.
+- El usuario ha aportado una captura posterior donde `Voynich Check` aparece como **Completado en 8 s**, con checks verdes en `Set up job`, descarga del repositorio, configuración de Python, comprobación de archivos, sintaxis, regresiones de metadatos y validación de metadatos Currier. Esto confirma visualmente que ese run terminó correctamente en los pasos mostrados. La captura no expone URL/ID ni SHA del run, y la consulta de estado de commit no devuelve checks; por tanto, aún no se puede asociar inequívocamente el run a un SHA concreto ni cerrar la trazabilidad de CI.
+
+## 2. Bloqueos científicos y de archivo que siguen abiertos
+
+1. **Numeración:** `research/EXPERIMENT_REGISTER.md` indica colisiones y un último ID libre no confirmado. No asignar ni renumerar EXP todavía.
+2. **Colisiones de carpetas:** la auditoría estructural detectó colisiones para IDs 177, 594, 596, 597, 600, 601 y 602. Conservar originales; resolver referencias y aliases en el registro, no fusionar por nombre.
+3. **GitHub frente a Biblioteca:** existen conflictos de numeración entre EXP-623 de GitHub y documentos de orden de palabras de la Biblioteca. Los nombres similares no demuestran equivalencia. La instantánea anterior de la Biblioteca tenía 499 elementos; aún no se han cotejado todos los hashes de contenido contra GitHub.
+4. **EXP-590 / EXP-593:** las versiones antiguas que usaron `$Q` para clasificar Currier son inválidas para afirmaciones por clase. Conservarlas como históricas; usar `$L=A/B` y regenerar artefactos, verificando los hashes y el run de Actions.
+5. **IVTFF:** el protocolo de tokenización v7 registró acuerdo entre dos parsers para ZL3b/ZL3a bajo una política de normalización específica, pero esto no certifica conformidad completa IVTFF. La predicción A/B sigue bloqueada hasta completar fixtures y validación independiente.
+6. **Workflows:** hay 31 workflows según la auditoría previa; los grupos de concurrencia y las escrituras simultáneas siguen siendo un riesgo no auditado por completo. No hacer push forzado ni borrar outputs.
+
+## 3. Orden de trabajo obligatorio
+
+### P0 — CI y causa raíz
+- Comprobar la ejecución de `Voynich Check` que corresponde al commit `2c5418ff3d68111525bd04f769f8e5ee0a0ab039`.
+- Si falla, capturar la ruta completa y línea exacta del traceback; corregir el archivo realmente ejecutado, no una copia supuesta.
+- Verificar que las pruebas de regresión y la auditoría `$L` pasan en el mismo run.
+
+### P1 — Canonicalización de inventario
+- Mantener como fuentes de orientación `research/EXPERIMENT_REGISTER.md`, `research/ARTIFACT_COLLISION_REGISTER.md` y `research/repository_inventory_audit_2026-10-20.md`.
+- Inventariar script, resultado, JSON, hashes, commit y estado de cada artefacto crítico.
+- Clasificar las 62 carpetas que no tienen pareja script+resultado reconocible; no asumir que son defectos.
+- Comparar GitHub y Biblioteca mediante hashes reales antes de fusionar, renombrar o sobrescribir.
+
+### P2 — Reproducibilidad
+- Regenerar los resultados de EXP-590/593 con metadatos `$L` corregidos, sin sobrescribir los outputs históricos; registrar nuevas rutas versionadas y hashes.
+- Resolver fixtures IVTFF con ejemplos documentados y salidas esperadas antes de desbloquear experimentos sensibles al parser.
+
+### P3 — Reanudar investigación
+Solo después de cerrar P0 y documentar un inventario reconciliado. Consultar el registro y el backlog, evitar repetir pruebas ya realizadas y usar IDs nuevos únicamente tras una búsqueda completa.
+
+## 4. Criterios para declarar “ordenado”
+
+No declarar el proyecto “limpio” hasta tener: (a) CI verde confirmado por URL/ID, (b) registro EXP reconciliado, (c) colisiones con aliases y referencias documentadas, (d) outputs críticos reproducidos y con hashes, (e) workflows de escritura revisados, y (f) inventario GitHub/Biblioteca cotejado o con diferencias explícitamente pendientes.
+
+## Verificación CI de la corrección max-T — 21-10-2026 03:47 UTC
+
+- `Voynich Check` para el commit `4af3632956da17a898121d29f2edf653fe476fe3`: **success**, run [39540440576](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39540440576).
+- Workflow autónomo: run [39540440693](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39540440693), SHA `4af3632956da17a898121d29f2edf653fe476fe3`. En la consulta del 21-10-2026 a las 03:48:50 UTC, la auditoría IVTFF, EXP-590, EXP-593 y EXP-622 habían terminado correctamente; EXP-623 seguía ejecutándose y la publicación de resultados estaba pendiente.
+- La API de Actions aún mostraba el run en curso y cero artefactos publicados. La etapa de EXP-593 terminó con éxito, pero el nuevo JSON/MD y sus valores ajustados **todavía no están confirmados como publicados**. No declarar la reproducción completa hasta que el workflow concluya y se inspeccionen los archivos versionados.
+
+## 6. Hallazgo nuevo — EXP-593 max-T (21-10-2026)
+
+La revisión estadística detectó que el ajuste anterior usaba el máximo de recuentos brutos de `daiin`, `dain` y `daiiin`, aunque sus frecuencias base difieren mucho. Esto invalida los antiguos p ajustados para inferencia, aunque no los recuentos observados ni los p empíricos no ajustados.
+
+- Corregido el script en commit `4af3632956da17a898121d29f2edf653fe476fe3`: ajuste max-T mediante estadísticas estandarizadas por variante.
+- Errata añadida: `research/experiments/2026-10-21-exp593-maxT-erratum.md`.
+- Registro EXP actualizado en commit `7a8f1948481427537af71baf99736e715b5c7234`.
+- **Pendiente:** verificar el workflow disparado por el cambio y confirmar que los nuevos artefactos se generaron y publicaron. No usar los p ajustados antiguos.
+
+## 5. Próxima acción única
+
+**Auditar los workflows restantes con escritura a master y cotejar hashes de EXP-590/593.** El run 39491327187 completó con éxito los cuatro análisis y publicó resultados corregidos; el run 39490460729 documenta una carrera de push anterior. La captura de Voynich Check también aparece verde, pero sin run ID/SHA. No iniciar EXP nuevos ni renumerar hasta completar el inventario y la auditoría de concurrencia.
+
+
+## Verificación adicional — 21-10-2026 08:32 UTC
+
+- El workflow programado **Voynich Autonomous Research** terminó con conclusión `success`: [run 39569620268](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39569620268). El mismo run confirmó como exitosos los pasos de auditoría IVTFF, EXP-590, EXP-593, EXP-622, EXP-623 y la publicación de artefactos.
+- EXP-593 regenerado con metadatos Currier tomados de `$L`: `daiin` 726 casos (A=440, B=278, unknown=8), `dain` 198 y `daiiin` 19. La corrección de múltiples comparaciones usa estadísticos estandarizados por variante; los resultados siguen siendo evidencia posicional exploratoria, no desciframiento.
+- EXP-622 (ZL3b) y EXP-623 (IT2a) prueban si el contraste ch/sh es mayor después del dígrafo que antes. EXP-622: interacción +0,53 puntos porcentuales, p=0,823; EXP-623: interacción −0,91 puntos, p=0,690. Ninguno respalda una especificidad posterior al dígrafo; el resultado reduce la confianza en interpretaciones fonéticas fuertes de ese contraste.
+- Se corrigió una errata de copia en el texto de EXP-623: el informe identificaba IT2a como fuente, pero la limitación final decía por error que el experimento usaba ZL3b. Se corrigieron tanto el Markdown como el JSON; no cambian los datos numéricos.
+- **Estado global continúa EN AUDITORÍA.** El éxito de este workflow no cierra las colisiones de IDs, la reconciliación con la Biblioteca, la auditoría de concurrencia ni la conformidad completa IVTFF. No asignar nuevos IDs ni sobrescribir resultados históricos hasta cerrar esos bloqueos.
+
+
+## Auditoría de workflows y cotejo de artefactos — 21-10-2026, revisión posterior
+
+- Los tres runs `Voynich Check` disparados por las correcciones documentales terminaron con éxito: [39662345974](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39662345974), [39662351877](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39662351877) y [39662358400](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39662358400). Los tres completaron comprobación de archivos, sintaxis Python, regresiones IVTFF y auditoría de metadatos Currier.
+- Revisión de los 31 YAML de workflows: 30 tienen capacidad de escritura a `master`; 9 no declaran concurrencia ni reintentos; 21 declaran grupos de concurrencia diferentes, que no serializan escrituras de workflows distintos; solo 9 de los 30 tienen reintentos explícitos. `voynich-corpus-experiments.yml` además permite que falle el push con `continue-on-error: true`. La auditoría completa está en [WORKFLOW_CONCURRENCY_AUDIT_2026-10-21.md](WORKFLOW_CONCURRENCY_AUDIT_2026-10-21.md). **No se considera resuelto el riesgo de carreras.**
+- Cotejo de EXP-593: la transcripción usada declara SHA-256 `bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc`; el JSON corregido de 21-10-2026 contiene los campos de estadísticos estandarizados y los p ajustados 0,000400 / 0,000400 / 0,988602. El blob SHA del JSON es `a4b7ae7810baf6895010aba8abbfe0cc6369ad06`; el informe Markdown es `b11f9c18df6afde5015e8a58705be1ad41ef500a`. El run [39569620268](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39569620268) reprodujo esos valores y terminó sin cambios adicionales que publicar.
+- Cotejo de EXP-590: el script vigente usa `parse_currier_language` y el campo IVTFF `$L`; el informe/JSON corregidos declaran la misma fuente SHA-256 y recuentos globales de 4.188 líneas, 32.732 tokens y 726 `daiin`. El JSON corregido tiene blob SHA `49a202841b1dc30b47e381d3f82b6c7e35ab5ff3`; el informe, `df3dc9bc4007bcbe0cd84671482423eb77f48127`. Los outputs antiguos quedan preservados y no deben usarse para inferencias A/B.
+- Importante: los SHA anteriores son SHA de blobs de GitHub, no SHA-256 del contenido del archivo. La fuente de transcripción sí tiene SHA-256 de contenido anotado en los resultados.
+- Se corrigió el registro EXP-593 y la errata max-T para que ya no indiquen que la reproducción está pendiente. Estado correcto: **REPRODUCIDO, NO VALIDADO COMO DESCIFRAMIENTO**.
+
+### Próximo paso seguro
+
+Pilotar una plantilla de publicación con rebase/reintentos y error explícito en un solo workflow; validar el run antes de propagarla a los restantes 29. Mantener congelada la numeración EXP y no fusionar ni renombrar las colisiones hasta completar la comparación con la Biblioteca mediante hashes de contenido reales. No afirmar que la reconciliación GitHub/Biblioteca está terminada: este ciclo ha cotejado los artefactos críticos de EXP-590/593, no los 499 elementos de la Biblioteca.
+
+
+## Update de estabilización — 2026-10-22
+
+### Cambios operativos realizados
+- Se homogeneizó la protección de escritura de los 30 workflows con capacidad de modificar `master`: grupos de concurrencia **individuales por workflow**, `cancel-in-progress: false` y reintentos acotados de rebase/push. El workflow de solo lectura `voynich-check.yml` queda separado.
+- Se corrigió la estrategia inicial de grupo global compartido: GitHub puede cancelar una ejecución pendiente cuando llega otra al mismo grupo, así que no era una cola segura para 30 workflows. Los runs cancelados durante esa prueba quedan como **CANCELLED**, nunca como validaciones exitosas.
+- Se añadieron guardias a EXP-602 para no producir auditorías parciales si faltan transcripciones, si no se cubren exactamente ZL3b/ZL3a o si algún parser devuelve cero registros.
+- Se registraron estos cambios en `state/current_state.md` y en la auditoría de concurrencia. No se asignaron IDs EXP ni se modificaron deliberadamente conclusiones científicas.
+
+### Estado de verificación
+Al escribir esta actualización, varias ejecuciones de `Voynich Check` y algunas pruebas específicas han terminado en éxito; otras siguen en cola/en ejecución y hubo cancelaciones durante el diseño transitorio de concurrencia. Por tanto, la infraestructura ha mejorado, pero **CI global aún no está cerrado**. Hay que comprobar el resultado final del último commit y repetir/confirmar los workflows relevantes que quedaron cancelados antes de considerar la estabilización operativa completa.
+
+### Bloqueos científicos/archivísticos que siguen vigentes
+1. No crear ni renumerar experimentos hasta reconciliar el registro de EXP, las colisiones entre carpetas y las colisiones GitHub/Biblioteca.
+2. Completar fixtures de conformidad IVTFF 2.0.2 y una adjudicación independiente contra la especificación; el acuerdo entre parsers v7 no basta para desbloquear la predicción Currier A/B.
+3. Reproducir/confirmar los outputs críticos desde fuentes con hashes y comandos documentados, sin sobrescribir históricos.
+4. Cotejar por hashes reales los artefactos de GitHub y la Biblioteca; el cotejo parcial de EXP-590/593 no equivale a revisar la Biblioteca completa.
+5. Solo después, seleccionar un único experimento confirmatorio preregistrado y someter el informe a `skills/audit_experiment.md` antes de tocar el estado científico.
+
+
+## Verificación adicional de CI — 2026-10-22 05:54 UTC
+
+- Se consultó directamente la API de GitHub Actions para el run **Voynich Check #526**, run ID [39730701397](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39730701397), asociado al commit `63b6e68b6816c9ec9e347d633a08fe3146dd850d` (mensaje: `Correct current state after completed EXP-623 reproduction`).
+- Resultado del run: `completed / success`. Se verificaron los siete pasos principales: checkout, configuración de Python, existencia de corpus, sintaxis de scripts, regresiones IVTFF, auditoría de metadatos Currier y cierre del job; todos aparecen como `success`.
+- Alcance: esto confirma que el workflow de comprobación pasó en ese SHA concreto. **No** demuestra que los 30 workflows que escriben resultados estén todos verdes ni cierra la auditoría de concurrencia, el parser IVTFF completo o el cotejo GitHub/Biblioteca.
+- No se han borrado ni renombrado artefactos ni se ha asignado un nuevo ID EXP en esta actualización.
+
+
+## Auditoría estática de workflows de escritura — 2026-10-22 06:55 UTC
+
+### Inventario inspeccionado
+
+Se inspeccionaron los 32 archivos YAML presentes en `.github/workflows/` en `master`. La clasificación estática observada es:
+
+- **30 workflows con `contents: write`**: los 30 tienen un bloque `concurrency`, `cancel-in-progress: false`, un grupo propio por workflow, una operación de rebase/refresco antes de publicar, un bucle de reintentos acotado (cinco intentos en los ejemplos contrastados) y comandos `git add` dirigidos a rutas de resultados concretas.
+- **2 workflows de solo lectura**: `exp623-reproduction.yml` y `voynich-check.yml`; ambos declaran `contents: read` y no publican resultados al repositorio.
+- Se inspeccionaron explícitamente las secciones de publicación de `voynich-agent.yml` y `voynich-exp604.yml`: el agente limita `git add` a `research/experiments/`; EXP-604 añade solo sus dos archivos de resultado y aborta si el rebase presenta conflicto, en lugar de forzar la publicación.
+
+### Interpretación y límites
+
+Los grupos de concurrencia son **por workflow**, no un único bloqueo global compartido por los 30 escritores. Por ello no serializan entre sí las ejecuciones de workflows distintos: la protección frente a carreras entre escritores depende del rebase, los reintentos acotados y el rechazo de conflictos. Esta arquitectura no debe describirse como exclusión mutua global.
+
+La inspección fue estática y de cobertura de patrones; no demuestra que los 30 workflows hayan ejecutado correctamente en el estado actual, que todos los casos de conflicto estén cubiertos ni que los artefactos resultantes sean científicamente válidos. Se requiere confirmar los runs reales y revisar por separado cualquier conflicto de rebase y los cambios concurrentes sobre rutas compartidas.
+
+### CI observado durante esta revisión
+
+- **Voynich Check #528**, run [39736658830](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39736658830), commit `9ff40c4ca3dbbc8da9158703ad8606936d76e01b`: `completed / success`.
+- **Voynich Check #527**, run [39736645734](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39736645734), commit `e8b9cae8f70d7b4ec5622ddf1d3f58146f417ad5`: `completed / success`.
+- **Voynich Autonomous Research #26**, run [39736658859](https://github.com/kyrian20/voynich-autoexploration/actions/runs/39736658859), commit `9ff40c4ca3dbbc8da9158703ad8606936d76e01b`: seguía `in_progress` en la consulta de las 06:52 UTC; no se declara aprobado hasta comprobar su conclusión.
+
+No se ha creado ningún EXP, no se han renumerado experimentos ni se han eliminado o renombrado históricos en esta auditoría.
+
+
+## Revisión científica de resultados ch/sh — 2026-10-22
+
+Se compararon los resultados JSON y los informes versionados de EXP-622 y EXP-623 disponibles en `research/experiments/`. Estos son los resultados actualmente guardados en `master`; no deben confundirse con el cierre de la ejecución autónoma #26, que seguía en curso durante la consulta.
+
+| Métrica | EXP-622 (ZL3b) | EXP-623 (IT2a) |
+|---|---:|---:|
+| Ocurrencias con caracteres a ambos lados | 5.162 | 5.374 |
+| Estratos emparejados | 472 | 485 |
+| Folios representados | 144 | 149 |
+| Interacción (contraste posterior menos anterior) | +0,00530 | −0,00911 |
+| Permutaciones | 10.000 | 10.000 |
+| p bilateral por permutación | 0,82342 | 0,69003 |
+
+### Conclusión limitada
+
+Ninguno de estos resultados aporta evidencia estadística de una interacción ch/sh distinta de cero bajo el nulo de permutación empleado. Además, la estimación cambia de signo entre ZL3b e IT2a. Por tanto, **no se sostiene la afirmación de que el contraste ch/sh sea específicamente mayor después del dígrafo que antes** con estas pruebas. Esto no demuestra que el manuscrito carezca de estructura ni resuelve su desciframiento; solo limita esta hipótesis concreta bajo este análisis exploratorio.
+
+Ambos análisis usan un parser deliberadamente sencillo y un emparejamiento que no elimina todo posible confusor léxico. Antes de convertirlo en evidencia confirmatoria hacen falta pruebas de conformidad IVTFF independientes y un diseño preregistrado. ZL3b e IT2a son transcripciones alternativas del mismo manuscrito, no dos manuscritos independientes.
+
+### Protección de identidad y estado
+
+El árbol recursivo actual de GitHub devuelve 2.127 rutas y 624 carpetas `experiments/exp_NNN_…`, correspondientes a 617 IDs numéricos únicos. Se vuelven a observar siete colisiones de ID: 177, 594, 596, 597, 600, 601 y 602. Se conservan como hallazgos de inventario; no se fusiona, renombra ni elimina ninguna carpeta sin rastrear antes sus referencias históricas.
+
+La ejecución autónoma #26 había completado EXP-590, EXP-593 y EXP-622 con éxito y estaba ejecutando EXP-623 cuando se consultó. Su resultado final y la publicación de artefactos siguen pendientes de confirmación en Actions.
+
+
+## Contraste de parsers y puerta de validación — 2026-10-22
+
+Se volvió a leer el resultado versionado `experiments/exp_602_independent_ivtff_parser_audit/results_v7.json`. Para ZL3b, ambos parsers registran 5.385 filas y 227 cabeceras; para ZL3a, 5.389 filas y 227 cabeceras. En ambos casos el informe declara cero IDs exclusivos de un parser, cero campos discrepantes y ninguna fila sin interpretar. Los resúmenes de la estadística primaria también coinciden entre las dos implementaciones.
+
+Esto respalda **consistencia entre estas dos implementaciones concretas**, pero no equivale a validación oficial completa de IVTFF 2.0.2: el propio resultado documenta que ambas implementaciones tuvieron que corregirse en versiones previas y que la conformidad requiere fixtures independientes adjudicados contra la especificación. La auditoría ligera `exp_600_ivtff_parser_conformance` informa cero anomalías estructurales de las categorías que comprueba en ZL3b, ZL3a e IT2a, pero declara explícitamente que no es un validador oficial completo.
+
+**Decisión de control:** no se desbloquea todavía el uso del parser como fundamento único para conclusiones científicas confirmatorias. Mantener los resultados exploratorios con sus hashes, y exigir fixtures de delimitadores, alternativas vacías/no vacías, spans de incertidumbre, comentarios `<!…>`, continuaciones y cabeceras antes de elevar el estado de validación.
+
+## Inventario exacto de colisiones de identificadores — 2026-10-22
+
+Se recalculó el inventario directamente desde el árbol recursivo de `master` (2.127 rutas; el árbol no aparece truncado). Las siete colisiones de directorios de experimentos son:
+
+| ID repetido | Directorio A | Directorio B |
+|---|---|---|
+| 177 | `experiments/exp_177_position_sensitive_cipher` | `experiments/exp_177_verify` |
+| 594 | `experiments/exp_594_daiin_explicit_paragraph_markers` | `experiments/exp_594_daiin_paragraph_start` |
+| 596 | `experiments/exp_596_daiin_position_controls` | `experiments/exp_596_zl3a_zl3b_line_level_audit` |
+| 597 | `experiments/exp_597_daiin_frequency_control_words` | `experiments/exp_597_initial_form_next_token_context` |
+| 600 | `experiments/exp_600_ivtff_parser_conformance` | `experiments/exp_600_transcription_concordance` |
+| 601 | `experiments/exp_601_folio_clustered_confirmation` | `experiments/exp_601_primary_statistic_paired_sensitivity` |
+| 602 | `experiments/exp_602_heldout_predictive_test` | `experiments/exp_602_independent_ivtff_parser_audit` |
+
+**Decisión de integridad:** no renombrar directorios, reescribir referencias ni reutilizar estos números. Antes de reconciliar cada colisión hay que buscar referencias cruzadas en scripts, informes, workflows, índices y registros históricos; después, preparar un mapa de migración revisable y comprobar que no cambia hashes ni resultados de experimentos. Los nombres completos de directorio son por ahora el identificador inequívoco. Este inventario describe el árbol actual de GitHub, no una reconciliación con una copia local o una biblioteca externa.
+
+## Puertas de validación que siguen abiertas
+
+- La comprobación `Voynich Check #531` para el commit `cadb2e866a9dc68ea1a9f4ab8fcd61894519b0f1` terminó en **success**. Eso confirma que pasan las comprobaciones configuradas en ese workflow, incluida la prueba de regresión `tests/test_ivtff_metadata.py`; no equivale a validación completa del formato IVTFF.
+- La prueba de tokens existente cubre comentarios, alternativas primarias, alternativas vacías, anotaciones entre llaves, marcadores `@n`, marcadores de párrafo/dibujo y corchetes malformados. Aún se necesita ampliar las fixtures independientes y contrastarlas con el documento oficial antes de considerar cerrada la conformidad.
+- No iniciar todavía una clasificación confirmatoria Currier A/B: primero completar fixtures de formato, validar las etiquetas `$L` y mantener todos los folios enteros dentro de una sola partición de evaluación.
+
+## Hallazgo de auditoría IVTFF: ligaduras entre llaves — 2026-10-22
+
+La inspección de las dos funciones de tokenización usadas en EXP-602 (`tokens_regex` y `tokens_scanner`) detectó una limitación compartida: ambas eliminan todo el contenido `{…}`. IVTFF 2.0.2 §6.6 describe las llaves como ligaduras de caracteres Voynichese, por lo que no deben equipararse automáticamente a comentarios genéricos. La prueba actual solo acredita que los parsers coinciden en esta transformación; no acredita que conserve toda la información textual. Se documentó el riesgo y el criterio de validación en [la política de tokenización IVTFF](ivtff_tokenization_policy_2026-10-20.md).
+
+**Acción preventiva:** no cambiar retroactivamente los resultados ni proclamar que la conformidad del parser está cerrada. Antes de usar estos tokens para análisis confirmatorios, crear fixtures adjudicadas para ligaduras, conservar el texto bruto y comparar la política histórica de exclusión con una representación que preserve la ligadura; cuantificar cuántas filas, tokens y estadísticas cambian. El cero desacuerdo de EXP-602 v7 debe leerse como acuerdo entre dos implementaciones bajo una normalización compartida, no como conformidad oficial completa.
+

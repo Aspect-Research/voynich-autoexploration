@@ -1,0 +1,106 @@
+{
+  "experiment": "exp_613_615_ch_sh_inference_sensitivity",
+  "status": "corrected parser: terminal digraphs without a following character excluded",
+  "source_blob_sha": {
+    "ZL3b": "2a4533ab9bdfa85db9bad602d590978953055df1",
+    "IT2a": "4d6d3f2537b1f507a257529b49c94af7d6e03446"
+  },
+  "results": {
+    "ZL3b": {
+      "aeiouy": {
+        "matched_cells": 280,
+        "matched_folios": 23,
+        "counts": {
+          "ch_n": 2340,
+          "ch_vowels": 1957,
+          "ch_rate": 0.8363247863247864,
+          "sh_n": 1051,
+          "sh_vowels": 937,
+          "sh_rate": 0.8915318744053282,
+          "pooled_difference": 0.055207088080541866
+        },
+        "folio_equal_weight_mean_difference": 0.07595514621331842,
+        "bootstrap_ci95": [
+          0.03790095158795034,
+          0.10881068753838496
+        ],
+        "permutation_p": 0.00004999750012499375,
+        "leave_one_folio_out_range": [
+          0.050060889356859484,
+          0.06945451121168367
+        ]
+      },
+      "aeiou": {
+        "matched_cells": 280,
+        "matched_folios": 23,
+        "counts": {
+          "ch_n": 2340,
+          "ch_vowels": 1901,
+          "ch_rate": 0.8123931623931624,
+          "sh_n": 1051,
+          "sh_vowels": 900,
+          "sh_rate": 0.8563273073263559,
+          "pooled_difference": 0.043934144933193475
+        },
+        "folio_equal_weight_mean_difference": 0.07018199940108079,
+        "bootstrap_ci95": [
+          0.033429434404023156,
+          0.1042213502246387
+        ],
+        "permutation_p": 0.007949602519874007,
+        "leave_one_folio_out_range": [
+          0.03855306680280357,
+          0.05669333805123866
+        ]
+      }
+    },
+    "IT2a": {
+      "aeiouy": {
+        "matched_cells": 283,
+        "matched_folios": 23,
+        "counts": {
+          "ch_n": 2387,
+          "ch_vowels": 1982,
+          "ch_rate": 0.8303309593632174,
+          "sh_n": 1064,
+          "sh_vowels": 946,
+          "sh_rate": 0.8890977443609023,
+          "pooled_difference": 0.05876678499768484
+        },
+        "folio_equal_weight_mean_difference": 0.07489518670698178,
+        "bootstrap_ci95": [
+          0.037476921909775446,
+          0.10705511594212834
+        ],
+        "permutation_p": 0.00004999750012499375,
+        "leave_one_folio_out_range": [
+          0.05476547115421415,
+          0.0692626048483731
+        ]
+      },
+      "aeiou": {
+        "matched_cells": 283,
+        "matched_folios": 23,
+        "counts": {
+          "ch_n": 2387,
+          "ch_vowels": 1920,
+          "ch_rate": 0.8043569333891915,
+          "sh_n": 1064,
+          "sh_vowels": 910,
+          "sh_rate": 0.8552631578947368,
+          "pooled_difference": 0.05090622450554538
+        },
+        "folio_equal_weight_mean_difference": 0.07332657422769938,
+        "bootstrap_ci95": [
+          0.037840229155981855,
+          0.10525781045354213
+        ],
+        "permutation_p": 0.0030998450077496125,
+        "leave_one_folio_out_range": [
+          0.04685158211122198,
+          0.058960272836206196
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+name: Voynich Position Control Checks
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "experiments/exp_596_daiin_position_controls/**"
+      - "data/transcriptions/eva_zl3b.txt"
+      - "data/transcriptions/zl3a.txt"
+      - ".github/workflows/voynich-position-controls.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: voynich-position-controls
+  cancel-in-progress: false
+
+jobs:
+  position-controls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile-check
+        run: python -m py_compile experiments/exp_596_daiin_position_controls/script.py
+      - name: Run common-word position controls (no API)
+        run: python experiments/exp_596_daiin_position_controls/script.py --permutations 5000
+      - name: Upload position-control results
+        uses: actions/upload-artifact@v4
+        with:
+          name: exp-596-daiin-position-controls
+          path: experiments/exp_596_daiin_position_controls/results.json
+          if-no-files-found: error
+          retention-days: 90

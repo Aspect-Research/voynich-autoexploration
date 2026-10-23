@@ -1,0 +1,38 @@
+name: Voynich exp611 exact length-position ch-sh matching
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'experiments/exp_611_exact_length_position_ch_sh/script.py'
+      - 'data/transcriptions/eva_zl3b.txt'
+      - 'data/transcriptions/eva_it2a.txt'
+      - '.github/workflows/voynich-exp611.yml'
+
+# Serialize all workflows that write results to master.
+concurrency:
+  group: voynich-exp611
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run exact length-position matching
+        run: python experiments/exp_611_exact_length_position_ch_sh/script.py
+      - name: Conservar resultados reproducidos
+        uses: actions/upload-artifact@v4
+        with:
+          name: voynich-exp611-results
+          path: |
+            experiments/exp_611_exact_length_position_ch_sh/results.json
+            experiments/exp_611_exact_length_position_ch_sh/result.md
+          if-no-files-found: error
+          retention-days: 90

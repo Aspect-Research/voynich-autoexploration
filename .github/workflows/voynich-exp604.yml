@@ -1,0 +1,38 @@
+name: Voynich exp604 independent transcription replication
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'experiments/exp_604_independent_transcription_replication/script.py'
+      - 'data/transcriptions/eva_it2a.txt'
+      - '.github/workflows/voynich-exp604.yml'
+
+# Per-workflow concurrency prevents overlapping runs of this workflow only.
+# Results are retained as Actions artifacts; only voynich-agent publishes to master.
+concurrency:
+  group: voynich-exp604
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  exp604:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run fixed-protocol IT2a replication
+        run: python experiments/exp_604_independent_transcription_replication/script.py
+      - name: Conservar resultados reproducidos
+        uses: actions/upload-artifact@v4
+        with:
+          name: voynich-exp604-results
+          path: |
+            experiments/exp_604_independent_transcription_replication/results.json
+            experiments/exp_604_independent_transcription_replication/result.md
+          if-no-files-found: error
+          retention-days: 90

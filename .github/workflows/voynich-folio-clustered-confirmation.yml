@@ -1,0 +1,39 @@
+name: Voynich Folio-Clustered Confirmation
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "experiments/exp_601_folio_clustered_confirmation/script.py"
+      - "data/transcriptions/eva_zl3b.txt"
+      - ".github/workflows/voynich-folio-clustered-confirmation.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: voynich-folio-clustered-confirmation
+  cancel-in-progress: false
+
+jobs:
+  confirm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile-check
+        run: python -m py_compile experiments/exp_601_folio_clustered_confirmation/script.py
+      - name: Run frozen folio-cluster test (no API)
+        run: python experiments/exp_601_folio_clustered_confirmation/script.py --bootstrap 20000 --permutations 20000
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: exp-601-folio-clustered-confirmation
+          path: experiments/exp_601_folio_clustered_confirmation/results.json
+          if-no-files-found: error
+          retention-days: 90

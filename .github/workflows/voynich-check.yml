@@ -1,0 +1,372 @@
+name: Voynich Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar lector YAML para auditoría operativa
+        run: python -m pip install PyYAML==6.0.3
+
+      - name: Auditar contratos operativos y cobertura de registros
+        run: |
+          python tests/test_repository_operations.py
+          python scripts/audit_repository_operations.py
+
+      - name: Comprobar identidad de corpus y control de duplicados
+        run: |
+          python tests/test_corpus_integrity.py
+          python scripts/check_corpus_integrity.py
+          python tests/test_duplicate_leakage.py
+
+      - name: Verificar partición prospectiva por hoja física
+        run: |
+          python -m unittest discover -s tests -p 'test_prospective_leaf_holdout.py' -v
+          python scripts/prepare_prospective_leaf_holdout.py --out prospective-leaf-holdout.json
+          cmp research/decipherment/2026-10-23-prospective-leaf-holdout/manifest.json prospective-leaf-holdout.json
+
+      - name: Verificar corrección de paneles y manifiesto v2 sin alterar v1
+        run: |
+          python -m unittest discover -s tests -p 'test_prospective_leaf_holdout_v2.py' -v
+          python scripts/prepare_prospective_leaf_holdout_v2.py --out prospective-leaf-holdout-v2.json
+          cmp research/decipherment/2026-10-23-prospective-leaf-holdout/manifest-v2.json prospective-leaf-holdout-v2.json
+
+      - name: Comprobar independientemente la cobertura y particiones archivadas
+        run: python -m unittest discover -s tests -p 'test_committed_holdout_manifest_invariants.py' -v
+
+      - name: Conservar manifiesto v2 corregido con hashes
+        uses: actions/upload-artifact@v4
+        with:
+          name: prospective-leaf-holdout-v2-${{ github.run_id }}
+          path: prospective-leaf-holdout-v2.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Conservar manifiesto prospectivo con hashes
+        uses: actions/upload-artifact@v4
+        with:
+          name: prospective-leaf-holdout-${{ github.run_id }}
+          path: prospective-leaf-holdout.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Reproducir auditoría de lectores históricos
+        run: |
+          python tests/test_historical_latin_loaders.py
+          python scripts/audit_historical_latin_loaders.py --check research/maintenance/2026-10-22-loader-audit/results.json
+
+      - name: Verificar correcciones de afirmaciones históricas EXP-001/267/288
+        run: |
+          python tests/test_reference_claim_links.py
+          python scripts/audit_reference_claim_links.py --check research/maintenance/2026-10-22-claim-link-adjudication/results.json
+          python tests/test_exp001_claim_scope.py
+          python scripts/audit_exp001_claim_scope.py --check research/maintenance/2026-10-23-exp001-claim-scope/results.json
+
+      - name: Reproducir cuatro lectores de referencia restantes
+        run: |
+          python tests/test_remaining_reference_loaders.py
+          python scripts/audit_remaining_reference_loaders.py --check research/maintenance/2026-10-22-remaining-readers/results.json
+
+      - name: Auditar estadísticas archivadas de EXP-170 sin ejecutar el cifrador
+        run: |
+          python tests/test_exp170_archive.py
+          python scripts/audit_exp170_archive.py --check research/maintenance/2026-10-22-exp170-audit/results.json
+
+      - name: Reproducir sensibilidad de entropía de referencia
+        run: |
+          python tests/test_reference_entropy_sensitivity.py
+          python scripts/audit_reference_entropy_sensitivity.py --check research/maintenance/2026-10-22-reference-sensitivity/results.json
+
+      - name: Reproducir auditorías acotadas de EXP-173
+        run: |
+          python tests/test_exp173_c005_scope.py
+          python scripts/audit_exp173_c005_scope.py --check research/maintenance/2026-10-23-exp173-c005-scope/results.json
+          python tests/test_exp173_currier_crosswalk.py
+          python scripts/audit_exp173_currier_crosswalk.py --check research/maintenance/2026-10-23-exp173-currier-crosswalk/results.json
+          python tests/test_exp173_line_null.py
+          python scripts/audit_exp173_line_null.py --check research/maintenance/2026-10-23-exp173-line-null/results.json
+          python tests/test_exp173_reader_bridge.py
+          python scripts/audit_exp173_reader_bridge.py --check research/maintenance/2026-10-23-exp173-reader-bridge
+          python tests/test_exp173_paragraph_strata.py
+          python scripts/audit_exp173_paragraph_strata.py --check research/maintenance/2026-10-23-paragraph-strata/results.json
+          python tests/test_am_lexical_contributions.py
+          python scripts/audit_am_lexical_contributions.py --check research/maintenance/2026-10-23-am-lexical-contributions/results.json.gz
+          python tests/test_predecessor_opportunities.py
+          python scripts/audit_predecessor_opportunities.py --check research/maintenance/2026-10-23-predecessor-opportunities/results.json.gz
+          python tests/test_folio_context_control.py
+          python scripts/audit_folio_context_control.py --check research/maintenance/2026-10-23-folio-context-control/results.json.gz
+
+      - name: Reproducir soporte efectivo de identidad
+        run: python scripts/audit_two_token_identity_support.py --check
+
+      - name: Probar y reproducir predictor de subunidades con puerta natural
+        run: |
+          python tests/test_subword_boundary.py
+          python scripts/analyze_subword_boundary.py --check
+
+      - name: Reproducir incremento de subunidades sobre contexto de carácter
+        run: |
+          python tests/test_subword_increment.py
+          python scripts/analyze_subword_increment.py --check
+
+      - name: Comprobar archivos de investigación
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          required = [
+              Path("data/transcriptions/eva_zl3b.txt"),
+              Path("data/transcriptions/eva_it2a.txt"),
+              Path("data/transcriptions/zl3a.txt"),
+          ]
+          failed = False
+          for path in required:
+              if not path.is_file():
+                  print(f"FALTA: {path}")
+                  failed = True
+                  continue
+              text = path.read_text(encoding="utf-8")
+              print(f"OK: {path} ({len(text)} caracteres)")
+              if not text.strip():
+                  print(f"ERROR: archivo vacío: {path}")
+                  failed = True
+          if failed:
+              sys.exit(1)
+          PY
+
+      - name: Validar sintaxis de todos los scripts Python
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          files = [
+              p for p in Path(".").rglob("*.py")
+              if not any(part in {".git", ".venv", "venv"} for part in p.parts)
+          ]
+          errors = []
+          for path in files:
+              try:
+                  ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              except (SyntaxError, UnicodeDecodeError) as exc:
+                  errors.append(f"{path}: {exc}")
+          print(f"Scripts Python comprobados: {len(files)}")
+          if errors:
+              print("\n".join(errors))
+              raise SystemExit(1)
+          print("Sintaxis Python correcta.")
+          PY
+
+      - name: Verificar reparación de rutas sin cambios de algoritmo
+        run: python scripts/audit_legacy_portability.py
+
+      - name: Probar capa léxica IVTFF sin pérdida
+        run: python tests/test_ivtff_lossless.py
+
+      - name: Auditar preservación de información en tres transcripciones
+        run: python scripts/audit_research_readiness.py > intensive-readiness.json
+
+      - name: Conservar auditoría intensiva
+        uses: actions/upload-artifact@v4
+        with:
+          name: intensive-readiness-${{ github.run_id }}
+          path: intensive-readiness.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Probar controles de sensibilidad de tokenización
+        run: python tests/test_token_policy_sensitivity.py
+
+      - name: Reproducir rejilla factorial y comparar snapshot
+        run: |
+          python scripts/audit_token_policy_sensitivity.py > token-policy-sensitivity.json
+          python scripts/check_audit_snapshot.py research/maintenance/2026-10-22-token-sensitivity/results.json token-policy-sensitivity.json
+
+      - name: Reproducir sensibilidad del modelo EXP-607
+        run: |
+          python scripts/audit_exp607_reader_sensitivity.py > exp607-reader-sensitivity.json
+          python scripts/check_audit_snapshot.py research/maintenance/2026-10-22-token-sensitivity/exp607-results.json exp607-reader-sensitivity.json
+
+      - name: Reproducir bootstrap pareado de EXP-601
+        run: |
+          python scripts/audit_exp601_paired_reader_bootstrap.py > exp601-paired-reader-bootstrap.json
+          python scripts/check_audit_snapshot.py research/maintenance/2026-10-22-token-sensitivity/exp601-paired-bootstrap.json exp601-paired-reader-bootstrap.json
+
+      - name: Probar y reproducir alcance P0 de EXP-607
+        run: |
+          python tests/test_exp607_scope_sensitivity.py
+          python scripts/audit_exp607_scope_sensitivity.py > exp607-scope-sensitivity.json
+          python scripts/check_audit_snapshot.py research/maintenance/2026-10-22-exp607-scope/results.json exp607-scope-sensitivity.json
+
+      - name: Reproducir paquete de posibles anclas textuales
+        run: |
+          python scripts/prepare_decipherment_anchor_packet.py > decipherment-anchor-candidates.json
+          python scripts/check_audit_snapshot.py research/decipherment/2026-10-22-anchor-candidates.json decipherment-anchor-candidates.json
+
+      - name: Probar y reproducir control exploratorio daiin dam
+        run: |
+          python tests/test_daiin_dam_control.py
+          python scripts/audit_daiin_dam_control.py > daiin-dam-control.json
+          python scripts/check_audit_snapshot.py research/decipherment/2026-10-22-daiin-dam-control/results.json daiin-dam-control.json
+
+      - name: Verificar distribución exacta del control local
+        run: |
+          python tests/test_daiin_dam_exact.py
+          python scripts/audit_daiin_dam_exact.py > daiin-dam-exact.json
+          python scripts/check_audit_snapshot.py research/maintenance/2026-10-22-precision-review/exact-results.json daiin-dam-exact.json
+
+      - name: Reproducir bloque integrado de orden residual y corpus
+        run: |
+          python research/analysis/2026-10-22-residual-order/run_integrated.py --out "$RUNNER_TEMP/residual-order-${{ github.run_id }}"
+
+      - name: Probar y reproducir predictor con dos predecesores
+        run: |
+          python tests/test_two_token_residual.py
+          python scripts/analyze_two_token_residual.py --check research/analysis/2026-10-23-two-token-residual/results.json.gz
+
+      - name: Conservar reproducción del bloque integrado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: residual-order-integrated-${{ github.run_id }}
+          path: ${{ runner.temp }}/residual-order-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 90
+
+      - name: Probar controles de posición y bordes de la pareja EVA
+        run: |
+          python tests/test_constrained_pair.py
+          python scripts/audit_constrained_pair.py > constrained-pair.json
+          python scripts/check_audit_snapshot.py research/decipherment/2026-10-22-constrained-pair/results.json constrained-pair.json
+
+      - name: Probar evidencias de anclas y reproducir concordancias
+        run: |
+          python tests/test_decipherment_anchor_evidence.py
+          python scripts/audit_decipherment_anchor_concordances.py > decipherment-anchor-concordances.json
+          python scripts/check_audit_snapshot.py research/decipherment/2026-10-22-anchor-review/concordances.json decipherment-anchor-concordances.json
+
+      - name: Probar viabilidad limitada de correspondencias publicadas
+        run: |
+          python tests/test_partial_sound_rule_feasibility.py
+          python scripts/audit_partial_sound_rule_feasibility.py > partial-sound-rule-feasibility.json
+          python scripts/check_audit_snapshot.py research/decipherment/2026-10-22-f41v-feasibility/rule-results.json partial-sound-rule-feasibility.json
+
+      - name: Conservar auditorías de sensibilidad reproducidas
+        uses: actions/upload-artifact@v4
+        with:
+          name: token-policy-sensitivity-${{ github.run_id }}
+          path: |
+            token-policy-sensitivity.json
+            exp607-reader-sensitivity.json
+            exp601-paired-reader-bootstrap.json
+            exp607-scope-sensitivity.json
+            decipherment-anchor-candidates.json
+            decipherment-anchor-concordances.json
+            partial-sound-rule-feasibility.json
+            daiin-dam-control.json
+            daiin-dam-exact.json
+            constrained-pair.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Probar regresiones de metadatos IVTFF
+        run: python tests/test_ivtff_metadata.py
+
+      - name: Validar metadatos Currier desde IVTFF
+        run: |
+          python scripts/audit_ivtff_metadata.py
+          python tests/test_ivtff_metadata_strict.py
+          python scripts/audit_ivtff_metadata_strict.py
+
+      - name: Inventariar spans entre llaves sin alterar resultados
+        run: python scripts/audit_ivtff_brace_spans.py
+
+      - name: Probar vistas alternativas de ligaduras IVTFF
+        run: python tests/test_ivtff_ligature_views.py
+
+      - name: Cuantificar sensibilidad descriptiva de ligaduras IVTFF
+        run: python scripts/audit_ivtff_ligature_views.py
+
+      - name: Probar cobertura de identificadores IVTFF en EXP-590
+        run: python tests/test_exp590_ivtff_line_ids.py
+      - name: Reproducir EXP-590 con cobertura ampliada
+        id: exp590
+        run: |
+          python scripts/exp590_daiin_position.py
+          echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+      - name: Conservar salidas de EXP-590 ampliado
+        uses: actions/upload-artifact@v4
+        with:
+          name: exp590-corrected-${{ steps.exp590.outputs.date }}
+          path: |
+            research/experiments/${{ steps.exp590.outputs.date }}-exp590-corrected-L-metadata.json
+            research/experiments/${{ steps.exp590.outputs.date }}-exp590-corrected-L-metadata.md
+          if-no-files-found: error
+
+
+      - name: Probar sensibilidad de daiin agrupada por folio
+        run: python tests/test_exp590_folio_cluster_sensitivity.py
+
+      - name: Ejecutar sensibilidad descriptiva por folio para daiin
+        id: daiin_folio
+        run: |
+          python scripts/exp590_folio_cluster_sensitivity.py
+          echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+      - name: Conservar informe de sensibilidad por folio
+        uses: actions/upload-artifact@v4
+        with:
+          name: daiin-folio-sensitivity-${{ steps.daiin_folio.outputs.date }}
+          path: |
+            research/experiments/${{ steps.daiin_folio.outputs.date }}-daiin-folio-cluster-sensitivity.json
+            research/experiments/${{ steps.daiin_folio.outputs.date }}-daiin-folio-cluster-sensitivity.md
+          if-no-files-found: error
+
+      - name: Verificar ruta portable del corpus de EXP-573
+        run: python tests/test_exp573_portability.py
+
+      - name: Reproducir reconciliación metodológica EXP-573
+        run: python experiments/exp_573_c007_reconciliation/script.py
+
+      - name: Probar regresiones de identificadores de página y locus IVTFF
+        run: python tests/test_ivtff_page_locus_ids.py
+
+      - name: Auditar cobertura estructural de identificadores IVTFF
+        run: python scripts/audit_ivtff_page_locus_ids.py
+
+      - name: Configurar intérprete exacto para reconstrucción de batería
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.14"
+
+      - name: Reconstruir batería temporal y verificar hashes históricos
+        env:
+          BC_REPLAY_DIR: ${{ runner.temp }}/bc-replay-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          python -m pip install -r experiments/common_battery_2026_10_22/requirements.txt
+          python experiments/common_battery_2026_10_22/script.py --out "$BC_REPLAY_DIR"
+          python scripts/verify_common_battery_reconstruction.py "$BC_REPLAY_DIR"
+
+      - name: Verificar contratos y archivo de batería común (no valida ciencia)
+        env:
+          BC_REPLAY_DIR: ${{ runner.temp }}/bc-replay-${{ github.run_id }}-${{ github.run_attempt }}
+        run: python tests/test_common_battery.py

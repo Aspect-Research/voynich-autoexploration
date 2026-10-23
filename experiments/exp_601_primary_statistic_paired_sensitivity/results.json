@@ -1,0 +1,268 @@
+{
+  "experiment": "exp_601_primary_statistic_paired_sensitivity",
+  "protocol_version": 1,
+  "source_files": [
+    {
+      "path": "data/transcriptions/eva_zl3b.txt",
+      "bytes": 411671,
+      "sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc",
+      "duplicate_keys": 0
+    },
+    {
+      "path": "data/transcriptions/zl3a.txt",
+      "bytes": 411710,
+      "sha256": "56419297682d338ff1a0a17f5ae251e3ee3e2c5bf05a62db04c5385ef30b36a2",
+      "duplicate_keys": 0
+    }
+  ],
+  "filter": {
+    "Currier": "B",
+    "normalized_locus": "P0",
+    "minimum_clean_tokens_per_line": 2
+  },
+  "full_version_summaries": {
+    "ZL3b": {
+      "eligible_lines": 2325,
+      "targets": {
+        "daiin": {
+          "token_count": 295,
+          "first_observed": 88,
+          "first_expected": 31.279224,
+          "enrichment": 2.813369
+        },
+        "aiin": {
+          "token_count": 355,
+          "first_observed": 1,
+          "first_expected": 34.198762,
+          "enrichment": 0.029241
+        },
+        "chedy": {
+          "token_count": 479,
+          "first_observed": 6,
+          "first_expected": 49.337263,
+          "enrichment": 0.121612
+        },
+        "dain": {
+          "token_count": 107,
+          "first_observed": 34,
+          "first_expected": 10.714287,
+          "enrichment": 3.173333
+        },
+        "saiin": {
+          "token_count": 82,
+          "first_observed": 46,
+          "first_expected": 9.158331,
+          "enrichment": 5.022749
+        },
+        "qokaiin": {
+          "token_count": 240,
+          "first_observed": 25,
+          "first_expected": 26.845879,
+          "enrichment": 0.931242
+        }
+      }
+    },
+    "ZL3a": {
+      "eligible_lines": 2325,
+      "targets": {
+        "daiin": {
+          "token_count": 296,
+          "first_observed": 88,
+          "first_expected": 31.383925,
+          "enrichment": 2.803983
+        },
+        "aiin": {
+          "token_count": 354,
+          "first_observed": 1,
+          "first_expected": 34.087651,
+          "enrichment": 0.029336
+        },
+        "chedy": {
+          "token_count": 479,
+          "first_observed": 6,
+          "first_expected": 49.330852,
+          "enrichment": 0.121628
+        },
+        "dain": {
+          "token_count": 107,
+          "first_observed": 34,
+          "first_expected": 10.714287,
+          "enrichment": 3.173333
+        },
+        "saiin": {
+          "token_count": 82,
+          "first_observed": 46,
+          "first_expected": 9.158331,
+          "enrichment": 5.022749
+        },
+        "qokaiin": {
+          "token_count": 240,
+          "first_observed": 25,
+          "first_expected": 26.845879,
+          "enrichment": 0.931242
+        }
+      }
+    }
+  },
+  "paired_alignment": {
+    "common_identifiers": 5385,
+    "matched_eligible_B_P0_lines": 2325,
+    "aligned_B_P0_lines_with_any_clean_token_change": 10,
+    "aligned_B_P0_lines_with_changed_first_token": 2,
+    "changed_B_P0_line_keys": [
+      "f103v.31",
+      "f104r.30",
+      "f105r.5",
+      "f113r.21",
+      "f115r.35",
+      "f26r.2",
+      "f26r.7",
+      "f41r.6",
+      "f66v.9",
+      "f95r1.1"
+    ],
+    "changed_first_token_line_keys": [
+      "f113r.21",
+      "f26r.7"
+    ],
+    "by_target": {
+      "daiin": {
+        "matched_eligible_lines": 2325,
+        "ZL3b_token_count": 295,
+        "ZL3a_token_count": 296,
+        "token_count_delta_ZL3a_minus_ZL3b": 1,
+        "matched_lines_with_token_count_difference": 1,
+        "ZL3b_first_observed": 88,
+        "ZL3a_first_observed": 88,
+        "first_count_delta_ZL3a_minus_ZL3b": 0,
+        "ZL3b_first_expected": 31.279224,
+        "ZL3a_first_expected": 31.383925,
+        "expected_delta_ZL3a_minus_ZL3b": 0.104701,
+        "ZL3b_enrichment": 2.813369,
+        "ZL3a_enrichment": 2.803983,
+        "matched_lines_where_first_position_status_changed": 0,
+        "ZL3b_only_first": 0,
+        "ZL3a_only_first": 0,
+        "examples_first_status_changes": []
+      },
+      "aiin": {
+        "matched_eligible_lines": 2325,
+        "ZL3b_token_count": 355,
+        "ZL3a_token_count": 354,
+        "token_count_delta_ZL3a_minus_ZL3b": -1,
+        "matched_lines_with_token_count_difference": 1,
+        "ZL3b_first_observed": 1,
+        "ZL3a_first_observed": 1,
+        "first_count_delta_ZL3a_minus_ZL3b": 0,
+        "ZL3b_first_expected": 34.198762,
+        "ZL3a_first_expected": 34.087651,
+        "expected_delta_ZL3a_minus_ZL3b": -0.111111,
+        "ZL3b_enrichment": 0.029241,
+        "ZL3a_enrichment": 0.029336,
+        "matched_lines_where_first_position_status_changed": 0,
+        "ZL3b_only_first": 0,
+        "ZL3a_only_first": 0,
+        "examples_first_status_changes": []
+      },
+      "chedy": {
+        "matched_eligible_lines": 2325,
+        "ZL3b_token_count": 479,
+        "ZL3a_token_count": 479,
+        "token_count_delta_ZL3a_minus_ZL3b": 0,
+        "matched_lines_with_token_count_difference": 0,
+        "ZL3b_first_observed": 6,
+        "ZL3a_first_observed": 6,
+        "first_count_delta_ZL3a_minus_ZL3b": 0,
+        "ZL3b_first_expected": 49.337263,
+        "ZL3a_first_expected": 49.330852,
+        "expected_delta_ZL3a_minus_ZL3b": -0.00641,
+        "ZL3b_enrichment": 0.121612,
+        "ZL3a_enrichment": 0.121628,
+        "matched_lines_where_first_position_status_changed": 0,
+        "ZL3b_only_first": 0,
+        "ZL3a_only_first": 0,
+        "examples_first_status_changes": []
+      },
+      "dain": {
+        "matched_eligible_lines": 2325,
+        "ZL3b_token_count": 107,
+        "ZL3a_token_count": 107,
+        "token_count_delta_ZL3a_minus_ZL3b": 0,
+        "matched_lines_with_token_count_difference": 0,
+        "ZL3b_first_observed": 34,
+        "ZL3a_first_observed": 34,
+        "first_count_delta_ZL3a_minus_ZL3b": 0,
+        "ZL3b_first_expected": 10.714287,
+        "ZL3a_first_expected": 10.714287,
+        "expected_delta_ZL3a_minus_ZL3b": 0.0,
+        "ZL3b_enrichment": 3.173333,
+        "ZL3a_enrichment": 3.173333,
+        "matched_lines_where_first_position_status_changed": 0,
+        "ZL3b_only_first": 0,
+        "ZL3a_only_first": 0,
+        "examples_first_status_changes": []
+      },
+      "saiin": {
+        "matched_eligible_lines": 2325,
+        "ZL3b_token_count": 82,
+        "ZL3a_token_count": 82,
+        "token_count_delta_ZL3a_minus_ZL3b": 0,
+        "matched_lines_with_token_count_difference": 0,
+        "ZL3b_first_observed": 46,
+        "ZL3a_first_observed": 46,
+        "first_count_delta_ZL3a_minus_ZL3b": 0,
+        "ZL3b_first_expected": 9.158331,
+        "ZL3a_first_expected": 9.158331,
+        "expected_delta_ZL3a_minus_ZL3b": 0.0,
+        "ZL3b_enrichment": 5.022749,
+        "ZL3a_enrichment": 5.022749,
+        "matched_lines_where_first_position_status_changed": 0,
+        "ZL3b_only_first": 0,
+        "ZL3a_only_first": 0,
+        "examples_first_status_changes": []
+      },
+      "qokaiin": {
+        "matched_eligible_lines": 2325,
+        "ZL3b_token_count": 240,
+        "ZL3a_token_count": 240,
+        "token_count_delta_ZL3a_minus_ZL3b": 0,
+        "matched_lines_with_token_count_difference": 0,
+        "ZL3b_first_observed": 25,
+        "ZL3a_first_observed": 25,
+        "first_count_delta_ZL3a_minus_ZL3b": 0,
+        "ZL3b_first_expected": 26.845879,
+        "ZL3a_first_expected": 26.845879,
+        "expected_delta_ZL3a_minus_ZL3b": 0.0,
+        "ZL3b_enrichment": 0.931242,
+        "ZL3a_enrichment": 0.931242,
+        "matched_lines_where_first_position_status_changed": 0,
+        "ZL3b_only_first": 0,
+        "ZL3a_only_first": 0,
+        "examples_first_status_changes": []
+      }
+    },
+    "unmatched_records": {
+      "ZL3b": {
+        "line_ids": [],
+        "eligible_B_P0_records": []
+      },
+      "ZL3a": {
+        "line_ids": [
+          "f1r.29",
+          "f1r.30",
+          "f1r.31",
+          "f89v2.26"
+        ],
+        "eligible_B_P0_records": []
+      }
+    }
+  },
+  "notes": [
+    "This is a paired sensitivity comparison of two transcriptions of the same manuscript, not independent-sample inference.",
+    "The expected first count sums per-line target frequency (target occurrences / line length).",
+    "A line-first status change counts only if the target is first in one version but not the other.",
+    "No significance test is applied to differences between transcription versions.",
+    "Tokenizer/locator parser is the declared operational rule used for this family; independent parser review remains a follow-up.",
+    "No semantic or decipherment claim."
+  ]
+}

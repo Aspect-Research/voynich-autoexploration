@@ -1,0 +1,152 @@
+{
+  "experiment": "exp_600_ivtff_parser_conformance",
+  "protocol_version": 2,
+  "reference": "IVTFF format version 2.0.2, René Zandbergen, 2025-07-08; https://www.voynich.nu/software/ivtt/IVTFF_format.pdf",
+  "purpose": "Check the raw structural assumptions used by earlier token-position experiments before adding further hypotheses.",
+  "caveats": [
+    "This is an independent lightweight audit, not a full official IVTT validator.",
+    "The parser deliberately reports unparsed constructs instead of silently interpreting them.",
+    "Some IVTFF inline constructs are valid and require format-aware treatment; an anomaly is a review item, not automatically a corrupt file.",
+    "No semantic or decipherment claim is tested."
+  ],
+  "files": [
+    {
+      "label": "ZL3b",
+      "source": {
+        "path": "data/transcriptions/eva_zl3b.txt",
+        "bytes": 411671,
+        "sha256": "bf5b6d4ac1e3a51b1847a9c388318d609020441ccd56984c901c32b09beccafc"
+      },
+      "physical_lines": 8510,
+      "comments": 2898,
+      "page_headers": 227,
+      "unique_pages": 227,
+      "locus_lines": 5385,
+      "slash_continuation_lines": 0,
+      "empty_locus_bodies": 0,
+      "first_character_counts": {
+        "#": 2898,
+        "<": 5612
+      },
+      "locus_kind_counts": {
+        "P": 4130,
+        "L": 1029,
+        "C": 84,
+        "R": 142
+      },
+      "slot_marker_counts": {
+        "@": 1001,
+        "+": 3913,
+        "=": 78,
+        "*": 57,
+        "&": 325,
+        "~": 10,
+        "/": 1
+      },
+      "missing_page_before_locus_line_numbers": [],
+      "missing_page_count": 0,
+      "page_mismatch_examples": [],
+      "page_mismatch_count": 0,
+      "invalid_locus_number_examples": [],
+      "invalid_locus_number_count": 0,
+      "invalid_slot_examples": [],
+      "invalid_slot_count": 0,
+      "unparsed_angle_line_examples": [],
+      "unparsed_angle_line_count": 0,
+      "duplicate_locus_key_examples": [],
+      "duplicate_locus_key_count": 0
+    },
+    {
+      "label": "ZL3a",
+      "source": {
+        "path": "data/transcriptions/zl3a.txt",
+        "bytes": 411710,
+        "sha256": "56419297682d338ff1a0a17f5ae251e3ee3e2c5bf05a62db04c5385ef30b36a2"
+      },
+      "physical_lines": 8513,
+      "comments": 2897,
+      "page_headers": 227,
+      "unique_pages": 227,
+      "locus_lines": 5389,
+      "slash_continuation_lines": 0,
+      "empty_locus_bodies": 0,
+      "first_character_counts": {
+        "#": 2897,
+        "<": 5616
+      },
+      "locus_kind_counts": {
+        "P": 4130,
+        "L": 1033,
+        "C": 84,
+        "R": 142
+      },
+      "slot_marker_counts": {
+        "@": 1003,
+        "+": 3915,
+        "=": 78,
+        "*": 57,
+        "&": 325,
+        "~": 10,
+        "/": 1
+      },
+      "missing_page_before_locus_line_numbers": [],
+      "missing_page_count": 0,
+      "page_mismatch_examples": [],
+      "page_mismatch_count": 0,
+      "invalid_locus_number_examples": [],
+      "invalid_locus_number_count": 0,
+      "invalid_slot_examples": [],
+      "invalid_slot_count": 0,
+      "unparsed_angle_line_examples": [],
+      "unparsed_angle_line_count": 0,
+      "duplicate_locus_key_examples": [],
+      "duplicate_locus_key_count": 0
+    },
+    {
+      "label": "IT2a",
+      "source": {
+        "path": "data/transcriptions/eva_it2a.txt",
+        "bytes": 342104,
+        "sha256": "7f27a8b0feed8f6de0a99900df6bf912dd1d295c38e5f830bac8b41c3f536fb5"
+      },
+      "physical_lines": 5444,
+      "comments": 4,
+      "page_headers": 225,
+      "unique_pages": 225,
+      "locus_lines": 5215,
+      "slash_continuation_lines": 0,
+      "empty_locus_bodies": 0,
+      "first_character_counts": {
+        "#": 4,
+        "<": 5440
+      },
+      "locus_kind_counts": {
+        "P": 4118,
+        "L": 883,
+        "C": 72,
+        "R": 142
+      },
+      "slot_marker_counts": {
+        "@": 862,
+        "+": 3886,
+        "=": 76,
+        "*": 55,
+        "&": 325,
+        "~": 10,
+        "!": 1
+      },
+      "missing_page_before_locus_line_numbers": [],
+      "missing_page_count": 0,
+      "page_mismatch_examples": [],
+      "page_mismatch_count": 0,
+      "invalid_locus_number_examples": [],
+      "invalid_locus_number_count": 0,
+      "invalid_slot_examples": [],
+      "invalid_slot_count": 0,
+      "unparsed_angle_line_examples": [],
+      "unparsed_angle_line_count": 0,
+      "duplicate_locus_key_examples": [],
+      "duplicate_locus_key_count": 0
+    }
+  ]
+}

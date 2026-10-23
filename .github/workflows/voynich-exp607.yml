@@ -1,0 +1,38 @@
+name: Voynich exp607 held-out bigram prediction
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'experiments/exp_607_heldout_bigram_prediction/script.py'
+      - 'data/transcriptions/eva_zl3b.txt'
+      - 'data/transcriptions/eva_it2a.txt'
+      - '.github/workflows/voynich-exp607.yml'
+
+# Serialize all workflows that write results to master.
+concurrency:
+  group: voynich-exp607
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Test held-out next-token prediction
+        run: python experiments/exp_607_heldout_bigram_prediction/script.py
+      - name: Conservar resultados reproducidos
+        uses: actions/upload-artifact@v4
+        with:
+          name: voynich-exp607-results
+          path: |
+            experiments/exp_607_heldout_bigram_prediction/results.json
+            experiments/exp_607_heldout_bigram_prediction/result.md
+          if-no-files-found: error
+          retention-days: 90

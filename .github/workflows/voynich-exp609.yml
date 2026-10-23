@@ -1,0 +1,38 @@
+name: Voynich exp609 paired ch-sh vowel test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'experiments/exp_609_paired_ch_sh_vowel_test/script.py'
+      - 'data/transcriptions/eva_zl3b.txt'
+      - 'data/transcriptions/eva_it2a.txt'
+      - '.github/workflows/voynich-exp609.yml'
+
+# Serialize all workflows that write results to master.
+concurrency:
+  group: voynich-exp609
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run paired folio-level test
+        run: python experiments/exp_609_paired_ch_sh_vowel_test/script.py
+      - name: Conservar resultados reproducidos
+        uses: actions/upload-artifact@v4
+        with:
+          name: voynich-exp609-results
+          path: |
+            experiments/exp_609_paired_ch_sh_vowel_test/results.json
+            experiments/exp_609_paired_ch_sh_vowel_test/result.md
+          if-no-files-found: error
+          retention-days: 90

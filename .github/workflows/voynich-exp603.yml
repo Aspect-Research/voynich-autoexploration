@@ -1,0 +1,39 @@
+name: Voynich exp603 stratified held-out prediction
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "experiments/exp_603_stratified_heldout_prediction/script.py"
+      - "data/transcriptions/eva_zl3b.txt"
+      - "data/transcriptions/eva_it2a.txt"
+      - ".github/workflows/voynich-exp603.yml"
+
+permissions:
+  contents: read
+
+# Per-workflow concurrency prevents overlapping runs of this workflow only.
+# Results are retained as Actions artifacts; only voynich-agent publishes to master.
+concurrency:
+  group: voynich-exp603
+  cancel-in-progress: false
+
+jobs:
+  exp603:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run fixed-split evaluation
+        run: python experiments/exp_603_stratified_heldout_prediction/script.py
+      - name: Conservar resultados reproducidos
+        uses: actions/upload-artifact@v4
+        with:
+          name: voynich-exp603-results
+          path: |
+            experiments/exp_603_stratified_heldout_prediction/results.json
+            experiments/exp_603_stratified_heldout_prediction/result.md
+          if-no-files-found: error
+          retention-days: 90
